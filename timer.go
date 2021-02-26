@@ -36,7 +36,8 @@ func New(d time.Duration) Timer {
 			case tick := <-tmr.t.C:
 				tmr.c <- tick
 			case cmd := <-tmr.cmd:
-				if !tmr.t.Stop() {
+				tmr.t.Stop()
+				for len(tmr.t.C) > 0 {
 					<-tmr.t.C
 				}
 				switch t := cmd.(type) {
